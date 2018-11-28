@@ -28,7 +28,10 @@ First steps:
  * Push template files to repo
   * git push
 
-* Change project name in:
+* Change project name using quick-start.sh:
+  * ./quick-start.sh {service-name}
+
+THhis will update:
   * settings.gradle
   * deploy.env
   * Dockerfile
