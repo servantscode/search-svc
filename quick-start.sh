@@ -14,3 +14,6 @@ SERVICE="$(tr '[:lower:]' '[:upper:]' <<< ${SERVICE:0:1})${SERVICE:1}"
 DATE=`date +%D`
 USER=`whoami`
 printf "$SERVICE service\nCreator: $USER\nCreated: $DATE" >README.md
+
+git remote set-url origin git@github.com:servantscode/$SERVICE.git
+git push
