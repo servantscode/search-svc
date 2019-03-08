@@ -17,5 +17,5 @@ DATE=`date +%D`
 USER=`whoami`
 printf "Service: $SERVICE\nCreator: $USER\nCreated: $DATE" > README.md
 
-git remote set-url origin git@github.com:servantscode/$SERVICE.git
+git remote set-url origin git@github.com:servantscode/$SERVICE-svc.git
 git push
