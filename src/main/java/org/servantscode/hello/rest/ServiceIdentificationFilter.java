@@ -3,7 +3,6 @@ package org.servantscode.hello.rest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
-import org.servantscode.commons.rest.RequestLoggingFilter;
 
 import javax.annotation.Priority;
 import javax.ws.rs.container.ContainerRequestContext;
