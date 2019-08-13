@@ -1,4 +1,4 @@
-package org.servantscode.hello.db;
+package org.servantscode.search.db;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
