@@ -32,14 +32,36 @@ public class SearchSvc extends SCServiceBase {
 
         verifyUserAccess("search.list");
         try {
-            int totalPeople = db.getCount(search);
-            List<Search> results = db.getSearches(search, sortField, start, count);
-            return new PaginatedResponse<>(start, results.size(), totalPeople, results);
+            int userId = getUserId();
+            int totalSearches = db.getCount(userId, null, search);
+            List<Search> results = db.getSearches(userId, null, search, sortField, start, count);
+            return new PaginatedResponse<>(start, results.size(), totalSearches, results);
         } catch (Throwable t) {
             LOG.error("Retrieving searches failed:", t);
             throw t;
         }
     }
+
+    @GET @Path("/type/{type}") @Produces(MediaType.APPLICATION_JSON)
+    public PaginatedResponse<Search> getSearches(@PathParam("type") String typeString,
+                                                 @QueryParam("start") @DefaultValue("0") int start,
+                                                 @QueryParam("count") @DefaultValue("10") int count,
+                                                 @QueryParam("sort_field") @DefaultValue("last_used DESC") String sortField,
+                                                 @QueryParam("search") @DefaultValue("") String search) {
+
+        verifyUserAccess("search.list");
+        try {
+            Search.SearchType type = Search.SearchType.valueOf(typeString.toUpperCase());
+            int userId = getUserId();
+            int totalSearches = db.getCount(userId, type, search);
+            List<Search> results = db.getSearches(userId, type, search, sortField, start, count);
+            return new PaginatedResponse<>(start, results.size(), totalSearches, results);
+        } catch (Throwable t) {
+            LOG.error("Retrieving searches failed:", t);
+            throw t;
+        }
+    }
+
 
     @GET @Path("/{id}") @Produces(MediaType.APPLICATION_JSON)
     public Search getSearch(@PathParam("id") int id) {
@@ -90,7 +112,6 @@ public class SearchSvc extends SCServiceBase {
             throw t;
         }
     }
-
 
     @DELETE @Path("/{id}")
     public void deleteSearch(@PathParam("id") int id) {

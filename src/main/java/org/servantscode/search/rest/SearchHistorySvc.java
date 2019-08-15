@@ -10,9 +10,7 @@ import org.servantscode.search.db.SearchDB;
 import org.servantscode.search.db.SearchHistoryDB;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.SecurityContext;
 import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -23,8 +21,6 @@ public class SearchHistorySvc extends SCServiceBase {
     private static final Logger LOG = LogManager.getLogger(SearchHistorySvc.class);
 
     private final SearchHistoryDB db;
-
-    @Context SecurityContext securityContext;
 
     public SearchHistorySvc() { db = new SearchHistoryDB(); }
 
@@ -52,7 +48,7 @@ public class SearchHistorySvc extends SCServiceBase {
             throw new NotFoundException();
 
         try {
-            Search dbSearch = db.getSearch(search, searchType, getUserId(securityContext));
+            Search dbSearch = db.getSearch(search, searchType, getUserId());
             if(dbSearch == null || !db.deleteSearch(dbSearch))
                 throw new NotFoundException();
             LOG.info("Deleted search: " + dbSearch.getSearch());

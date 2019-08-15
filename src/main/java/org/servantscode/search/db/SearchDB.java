@@ -9,6 +9,7 @@ import org.servantscode.search.Search;
 import java.sql.*;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.servantscode.search.Search.SearchType.valueOf;
@@ -17,12 +18,25 @@ public class SearchDB extends DBAccess {
 
     private final SearchParser<Search> searchParser;
 
-    public SearchDB() {
-        this.searchParser = new SearchParser<>(Search.class, "name");
+    private static final HashMap<String, String> FIELD_MAP;
+
+    static {
+        FIELD_MAP = new HashMap<>(8);
+        FIELD_MAP.put("searchType", "search_type");
+        FIELD_MAP.put("searcherId", "searcher_id");
+        FIELD_MAP.put("lastUsed", "last_used");
     }
 
-    public int getCount(String search) {
-        QueryBuilder query = count().from("searches").search(searchParser.parse(search)).inOrg();
+    public SearchDB() {
+        this.searchParser = new SearchParser<>(Search.class, "name", FIELD_MAP);
+    }
+
+    public int getCount(int userId, Search.SearchType type, String search) {
+        QueryBuilder query = count().from("searches")
+                .where("searcher_id=?", userId)
+                .search(searchParser.parse(search)).inOrg();
+        if(type != null)
+            query.where("search_type=?", type);
         try (Connection conn = getConnection();
              PreparedStatement stmt = query.prepareStatement(conn);
              ResultSet rs = stmt.executeQuery()) {
@@ -47,9 +61,16 @@ public class SearchDB extends DBAccess {
         }
     }
 
-    public List<Search> getSearches(String search, String sortField, int start, int count) {
-        QueryBuilder query = selectAll().from("searches").search(searchParser.parse(search)).inOrg()
-                .sort(sortField).limit(count).offset(start);
+    public List<Search> getSearches(int userId, Search.SearchType type, String search, String sortField, int start, int count) {
+        QueryBuilder query = selectAll().from("searches")
+                .where("searcher_id=?", userId)
+                .search(searchParser.parse(search)).inOrg();
+
+        if(type != null)
+            query.where("search_type=?", type);
+
+        query.sort(sortField).limit(count).offset(start);
+
         try ( Connection conn = getConnection();
               PreparedStatement stmt = query.prepareStatement(conn)
         ) {
