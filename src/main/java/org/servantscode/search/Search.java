@@ -3,7 +3,7 @@ package org.servantscode.search;
 import java.time.ZonedDateTime;
 
 public class Search {
-    public enum SearchType {PERSON, FAMILY, MINISTRY, DONATION, MASS_INTENTION, EVENT, ROOM, EQUIPMENT, SEARCH };
+    public enum SearchType {PERSON, FAMILY, MINISTRY, DONATION, MASS_INTENTION, EVENT, ROOM, EQUIPMENT, SEARCH, PLEDGE };
 
     private int id;
     private String name;
